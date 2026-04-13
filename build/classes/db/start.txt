@@ -1,0 +1,67 @@
+CREATE DATABASE IF NOT EXISTS salle;
+USE salle;
+
+CREATE TABLE IF NOT EXISTS person (
+    id_person INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    email VARCHAR(100) NOT NULL UNIQUE,
+    password VARCHAR(255) NOT NULL,
+    role ENUM('adherent','coach','admin') NOT NULL
+);
+
+
+CREATE TABLE IF NOT EXISTS adherent (
+    id_adherent INT PRIMARY KEY,
+    current_subscription_end DATE,
+    FOREIGN KEY (id_adherent) REFERENCES person(id_person) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS payment (
+    id_payment INT AUTO_INCREMENT PRIMARY KEY,
+    id_adherent INT NOT NULL,
+    amount DECIMAL(10,2) NOT NULL,
+    payment_date DATE NOT NULL,
+    subscription_end DATE NOT NULL,
+
+    FOREIGN KEY (id_adherent) REFERENCES adherent(id_adherent) 
+        ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS coach (
+    id_coach INT PRIMARY KEY,
+    speciality VARCHAR(100) NOT NULL,
+    FOREIGN KEY (id_coach) REFERENCES person(id_person) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS admin (
+    id_admin INT PRIMARY KEY,
+    FOREIGN KEY (id_admin) REFERENCES person(id_person) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS activity (
+    id_activity INT AUTO_INCREMENT PRIMARY KEY,
+    title VARCHAR(100) NOT NULL,
+    description TEXT,
+    activity_date DATE NOT NULL,
+    start_time TIME NOT NULL,
+    end_time TIME NOT NULL,
+    id_coach INT,
+    id_admin INT,
+    FOREIGN KEY (id_coach) REFERENCES coach(id_coach) ON DELETE SET NULL,
+    FOREIGN KEY (id_admin) REFERENCES admin(id_admin) ON DELETE SET NULL
+);
+
+alter table person add phone_number number;
+
+ALTER TABLE adherent
+ADD associated_program VARCHAR(15)
+DEFAULT '1 mois'
+AFTER id_adherent
+CHECK (associated_program IN ('1 mois', '3 mois', '6 mois', '12 mois'));
+
+ALTER TABLE adherent
+ADD current_subscription_start DATE
+AFTER current_subscription_end;
+
+
+
