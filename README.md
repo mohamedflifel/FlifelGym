@@ -47,6 +47,7 @@ Ce projet représente l'aboutissement de mes apprentissages en **Java Swing**, *
 
 ![Statistics](screenshots/7.jpeg)
 
+https://imgur.com/a/i4jgy8q
 
 
 
